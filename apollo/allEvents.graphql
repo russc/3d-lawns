@@ -1,0 +1,15 @@
+query allEvents($date_contains: String){
+  allEvents(filter: {date_contains: $date_contains }) {
+    id
+    datetime
+    client {
+      id
+      name
+    }
+    services {
+      id
+      name
+      price
+    }
+  }
+}

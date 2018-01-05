@@ -1,0 +1,38 @@
+{
+  "name": "dixon-lawns",
+  "version": "1.0.0",
+  "description": "3D Lawns custom client management tools",
+  "author": "Russ Callahan",
+  "private": true,
+  "dependencies": {
+    "@nuxtjs/apollo": "^2.0.0",
+    "highlight.js": "^9.12.0",
+    "jquery": "^3.2.1",
+    "lang-detector": "https://github.com/hosein2398/lang-detector/tarball/master",
+    "materialize-css": "^0.100.2",
+    "moment": "^2.18.1",
+    "nuxt": "latest",
+    "pickadate": "^3.5.6",
+    "vue-highlight-component": "^1.0.0",
+    "vue2-timepicker": "^0.1.4"
+  },
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "eslint": "^3.15.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-html": "^2.0.0",
+    "eslint-plugin-promise": "^3.4.1",
+    "eslint-plugin-standard": "^2.0.1",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6"
+  }
+}

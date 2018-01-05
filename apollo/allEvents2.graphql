@@ -1,0 +1,11 @@
+query {
+  allEvents{
+    id
+    client {
+      id
+      name
+    }
+    date
+    datetime
+  }
+}

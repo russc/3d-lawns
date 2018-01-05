@@ -1,0 +1,9 @@
+query {
+  allClients{
+    id
+    name
+    avatar
+    email
+    address
+  }
+}
