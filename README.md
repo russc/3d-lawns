@@ -1,4 +1,4 @@
-# vue.sk
+
 
 > Nuxt.js project
 

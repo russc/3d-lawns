@@ -1,5 +1,6 @@
 # dependencies
-node_modules
+node_modules 
+README.md
 
 # logs
 npm-debug.log
