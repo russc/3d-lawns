@@ -10,13 +10,13 @@
       </div>
       <div class="month">
         <div class="week header">
-          <div class="day center-align">Sun</div>
-          <div class="day center-align">Mon</div>
-          <div class="day center-align">Tue</div>
-          <div class="day center-align">Wed</div>
-          <div class="day center-align">Thu</div>
-          <div class="day center-align">Fri</div>
-          <div class="day center-align">Sat</div>
+          <div class="day left-align">Sun</div>
+          <div class="day left-align">Mon</div>
+          <div class="day left-align">Tue</div>
+          <div class="day left-align">Wed</div>
+          <div class="day left-align">Thu</div>
+          <div class="day left-align">Fri</div>
+          <div class="day left-align">Sat</div>
         </div>
         <div class="week"
           v-for="week in weeksInMonth" 
@@ -43,7 +43,7 @@
                     </small>
                   </li>
                 </ul>
-              </router-link>
+              <!-- </router-link> -->
                   
             </div>
             <div class="day outter-month left-align" v-else></div>
@@ -76,18 +76,18 @@ export default {
   },
   computed: {
     month () {
-      return moment().year(this.$store.state.year).month(this.$store.state.month)
+      return moment(new Date()).year(this.$store.state.year).month(this.$store.state.month)
     },
     weeksInMonth () {
-      let start = moment(`${this.$store.state.year}-${this.$store.state.month + 1}-01`)
+      let start = moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`))
       let end = this.month.endOf('month')
       let data = []
       let day = start
       let index = 0
 
-      console.log('All Events', this.allEvents)
+      // console.log('All Events', this.allEvents)
 
-      while (day <= end) {
+      while (day <= end && this.allEvents !== null) {
         let events = this.allEvents.filter(event => moment(event.datetime).isSame(day, 'day'))
 
         if (data[index] === undefined) {
@@ -177,20 +177,13 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
+    background: lightblue;
+    color: #333;
+    opacity: .9;
     .tools {
-      display: none;
-      // font-size: 20px;
+      display: inline;
+      right:0;
     }
-    &:hover {
-      background: lightblue;
-      color: #333;
-      opacity: .9;
-      .tools {
-        display: inline;
-        right:0;
-      }
-    }
-
   }
   .last-row {
     margin-bottom: 1rem;

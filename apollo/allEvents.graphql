@@ -1,5 +1,5 @@
 query allEvents($date_contains: String){
-  allEvents(filter: {date_contains: $date_contains }) {
+  allEvents(filter: {date_contains: $date_contains }, orderBy: datetime_ASC) {
     id
     datetime
     client {

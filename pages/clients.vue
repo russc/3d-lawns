@@ -6,7 +6,7 @@
             <img :src="client.avatar" class="circle responsive-img medium" />
             <h5 class="center-align">{{client.name}}</h5>
             <p>{{client.email}}</p>
-            <h5><i class="material-icons small activator">more_horiz</i></h5>
+            <h6><i class="material-icons small activator">more_horiz</i></h6>
           </div>
           <div class="card-reveal">
             <span class="card-title grey-text text-darken-4">{{client.name}}<i class="material-icons right">close</i></span>

@@ -1,0 +1,21 @@
+mutation createEvent (
+  $date: String!, 
+  $datetime: DateTime!, 
+  $servicesIds: [ID!], 
+  $clientId: ID)
+  {
+  createEvent(
+    date: $date, 
+    datetime: $datetime, 
+    servicesIds: $servicesIds, 
+    clientId: $clientId) {
+      date
+      datetime
+      client {
+        name
+      }
+      services {
+        name
+      }
+  }
+}
