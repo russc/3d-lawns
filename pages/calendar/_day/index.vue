@@ -118,7 +118,7 @@ export default {
     newEvent () {
       let time = document.querySelector('#time').value
       let datetime = `${this.$route.params.day}${time}:00-0600`
-      // 2018-02-1300:09:00-0600
+
       console.log(datetime)
 
       this.$apollo.mutate({
