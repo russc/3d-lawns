@@ -68,7 +68,12 @@
       <div>Fri</div>
       <div>Sat</div>
       <div v-for="item in offSet" :key="'mobileOffset'+item"></div>
-      <div v-for="index in numDays" :key="'mobileDay'+index" @click="reformat(index)">{{index}}</div>
+      <div v-for="index in numDays" :key="'mobileDay'+index" @click="reformat(index, true)">
+        {{index}}
+        <p v-if="hasEvents(index)">
+          <i class="material-icons xsmall">face</i>
+        </p>
+      </div>
     </div>
     <!-- <div class="mobile-events">
       <p v-for="event in allEvents" :key="'mobile'+event.id">
@@ -92,6 +97,11 @@ import allEvents from '~/apollo/allEvents.graphql'
 import Panel from '~/components/Panel.vue'
 
 export default {
+  data () {
+    return {
+      eventsInMonth: []
+    }
+  },
   components: {
     Panel
   },
@@ -116,14 +126,17 @@ export default {
     offSet () {
       return moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`)).day()
     },
+    currentEvents () {
+      let events = this.allEvents !== null ? this.allEvents.filter(event => moment(event.datetime).isSame(this.month, 'month')) : ''
+      return events.map(event => event.datetime.slice(0, 10))
+    },
+
     weeksInMonth () {
       let start = moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`))
       let end = this.month.endOf('month')
       let data = []
       let day = start
       let index = 0
-
-      // console.log('All Events', this.allEvents)
 
       while (day <= end && this.allEvents !== null) {
         let events = this.allEvents.filter(event => moment(event.datetime).isSame(day, 'day'))
@@ -150,10 +163,17 @@ export default {
     }
   },
   methods: {
-    reformat (day) {
+    reformat (day, redirect) {
       let yearMonth = this.month.format('YYYY-MM')
       let format = day.toString().length > 1 ? `${yearMonth}-${day}` : `${yearMonth}-0${day}`
-      this.$router.push('calendar/' + format)
+      if (redirect) {
+        this.$router.push('calendar/' + format)
+      } else {
+        return format
+      }
+    },
+    hasEvents (date) {
+      return this.currentEvents.includes(this.reformat(date))
     }
   }
 }
@@ -172,9 +192,14 @@ export default {
     justify-content: space-between;
     div {
       // background:mistyrose;
-      text-align: left;
+      text-align: center;
       vertical-align: top;
       color: #fff;
+      p {
+        color: #0ad97c;
+        position: relative;
+        // right: 4px;
+      }
     }
   }
   .calendar {
