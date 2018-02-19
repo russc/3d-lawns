@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="calendar">
     <div class="container">
       <div class="toolbar">
@@ -57,6 +58,32 @@
       <panel></panel>
     </div> -->
   </div>
+  <div class="mobile-frame">
+    <div class="mobile-calendar">
+      <div>Sun</div>
+      <div>Mon</div>
+      <div>Tue</div>
+      <div>Wed</div>
+      <div>Thu</div>
+      <div>Fri</div>
+      <div>Sat</div>
+      <div v-for="item in offSet" :key="'mobileOffset'+item"></div>
+      <div v-for="index in numDays" :key="'mobileDay'+index" @click="reformat(index)">{{index}}</div>
+    </div>
+    <!-- <div class="mobile-events">
+      <p v-for="event in allEvents" :key="'mobile'+event.id">
+        {{event.client.name}}
+      </p>
+    </div> -->
+    <div class="mobile toolbar">
+      <a class="waves-effect waves-teal btn center-align" @click="$store.commit('prevMonth')"><i class="material-icons large">arrow_back</i></a>
+      <div class="month-title">
+        <h2>{{month.format('MMMM YYYY')}}</h2>  
+      </div> 
+      <a class="waves-effect waves-teal btn" @click="$store.commit('nextMonth')"><i class="material-icons large">arrow_forward</i></a>
+    </div>
+  </div>
+</div>
 </template>
 
 <script>
@@ -74,9 +101,20 @@ export default {
       prefetch: true
     }
   },
+  head () {
+    return {
+      title: 'Calendar'
+    }
+  },
   computed: {
     month () {
       return moment(new Date()).year(this.$store.state.year).month(this.$store.state.month)
+    },
+    numDays () {
+      return this.month.daysInMonth()
+    },
+    offSet () {
+      return moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`)).day()
     },
     weeksInMonth () {
       let start = moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`))
@@ -112,7 +150,11 @@ export default {
     }
   },
   methods: {
-
+    reformat (day) {
+      let yearMonth = this.month.format('YYYY-MM')
+      let format = day.toString().length > 1 ? `${yearMonth}-${day}` : `${yearMonth}-0${day}`
+      this.$router.push('calendar/' + format)
+    }
   }
 }
 </script>
@@ -121,6 +163,20 @@ export default {
   *, *:before, *:after {
     box-sizing: inherit;
   }
+  
+  .mobile-calendar {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    grid-template-rows: repeat(7, 5rem);
+    justify-content: space-between;
+    div {
+      // background:mistyrose;
+      text-align: left;
+      vertical-align: top;
+      color: #fff;
+    }
+  }
   .calendar {
     width: 98%;
     margin: 0 1%;
@@ -128,6 +184,9 @@ export default {
     @media (max-width: 768px) {
       width: 100%;
       margin: 0;
+    }
+    @media (max-width: 480px) {
+      display: none;
     }
     
   }
@@ -144,6 +203,14 @@ export default {
         font-size: 2em;
         margin-top: 0;
         padding: 0;
+      }
+    }
+    &.mobile {
+      bottom: 0;
+      position: fixed;
+      width: 100%;
+      .month-title {
+        margin-top: 20px;
       }
     }
     .btn {
