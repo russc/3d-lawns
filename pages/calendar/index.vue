@@ -68,7 +68,7 @@
       <div>Fri</div>
       <div>Sat</div>
       <div v-for="item in offSet" :key="'mobileOffset'+item"></div>
-      <div v-for="index in numDays" :key="'mobileDay'+index" @click="reformat(index, true)">
+      <div v-for="index in numDays" :key="'mobileDay'+index" class="mobile-day" @click="reformat(index, true)">
         {{index}}
         <p v-if="hasEvents(index)">
           <i class="material-icons xsmall">face</i>
@@ -84,6 +84,7 @@
       <a class="waves-effect waves-teal btn center-align" @click="$store.commit('prevMonth')"><i class="material-icons large">arrow_back</i></a>
       <div class="month-title">
         <h2>{{month.format('MMMM YYYY')}}</h2>  
+        <a class="waves-effect waves-teal btn" @click="$store.commit('now')">Now</a>  
       </div> 
       <a class="waves-effect waves-teal btn" @click="$store.commit('nextMonth')"><i class="material-icons large">arrow_forward</i></a>
     </div>
@@ -127,10 +128,11 @@ export default {
       return moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`)).day()
     },
     currentEvents () {
-      let events = this.allEvents !== null ? this.allEvents.filter(event => moment(event.datetime).isSame(this.month, 'month')) : ''
-      return events.map(event => event.datetime.slice(0, 10))
+      let events = this.allEvents !== null ? this.allEvents.filter(event => moment(event.datetime).isSame(this.month, 'month')) : null
+      if (events !== null) {
+        return events.map(event => event.datetime.slice(0, 10))
+      }
     },
-
     weeksInMonth () {
       let start = moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`))
       let end = this.month.endOf('month')
@@ -185,6 +187,9 @@ export default {
   }
   
   .mobile-calendar {
+    @media (min-width: 480px) {
+      display: none;
+    }
     padding: 1rem;
     display: grid;
     grid-template-columns: repeat(7, auto);
@@ -200,6 +205,10 @@ export default {
         position: relative;
         // right: 4px;
       }
+    }
+    .mobile-day:hover {
+      color: orangered;
+      cursor: pointer;
     }
   }
   .calendar {
@@ -225,7 +234,7 @@ export default {
       text-align: center;
        h2{
         color: mistyrose;
-        font-size: 2em;
+        font-size: 2rem;
         margin-top: 0;
         padding: 0;
       }
@@ -236,6 +245,9 @@ export default {
       width: 100%;
       .month-title {
         margin-top: 20px;
+      }
+      @media (min-width: 480px) {
+        display: none;
       }
     }
     .btn {
@@ -299,10 +311,11 @@ export default {
     color: #fff;
   }
   .day {
-    width: calc(100% / 7);
     margin: 2px;
+    overflow: hidden;
     font-size: 16px;
     font-weight: 700;
+    width: calc(100% / 7);
   }
   .today {
     background-color: cyan;

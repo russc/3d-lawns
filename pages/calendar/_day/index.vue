@@ -1,47 +1,53 @@
 <template>
   <div>
-    <div class="drawer">
-      <div>        
-        <form id="newEvent">
-          <div>
-            <h5>Clients</h5>
-            <fieldset v-for="client in allClients" v-bind:key="client.id">
-              <input type="radio" :id="client.id" :value="client.id" v-model="clientSelected"/>
-              <label :for="client.id">{{client.name}}</label>
-            </fieldset>
-            <!-- <span>{{clientSelected}}</span> -->
-          </div>
-          <div>
-            <h5>Services</h5>
-            <fieldset v-for="service in allServices" v-bind:key="service.id">
-              <input type="checkbox" :id="service.id" :value="service.id" v-model="servicesSelected"/>
-              <label :for="service.id">{{service.name}}</label>
-            </fieldset>
-          <!-- <span>{{servicesSelected}}</span> -->
-          </div>     
-          <div>
-            <h5>Time</h5>
-            <fieldset>
-              <input id="time" type="time" step="60" value="09:00"/>
-              <input type="button" v-on:click="newEvent()" value="save" />
-              <a v-on:click="toggleDrawer()" class="add btn-floating btn-medium waves-effect waves-light red"><i class="material-icons">close</i></a>
-            </fieldset>
-          </div>
-        </form>
-      </div>
-    </div>
     <div class="container">
       <div class="row">
         <div class="col s11">
           <h5 class="left-align">{{date}}</h5>  
-          <a v-on:click="toggleDrawer()" class="add btn-floating btn-medium waves-effect waves-light green accent-3"><i class="material-icons">add</i></a>
+          <a v-if="!edit" v-on:click="toggleDrawer()" class="add btn-floating btn-medium waves-effect waves-light green accent-3">
+            <i class="material-icons">add</i>
+          </a>
+          
+          <a v-else v-on:click="toggleDrawer()" class="add btn-floating btn-medium waves-effect waves-light red accent-3">
+            <i class="material-icons">close</i>
+          </a>
           <!-- <router-link class="add btn-floating btn-medium waves-effect waves-light green accent-3" :to="{ path: `${page}/new-event` }">  
             <i class="material-icons">add</i>
           </router-link> -->
         </div>
       </div>
-      <div class="row">
-        <!-- <div>events...{{events}}</div> -->
+      <div class="row" v-if="edit">
+        <div class="drawer">
+          <div>        
+            <form id="newEvent">
+              <div>
+                <h5>Time</h5>
+                <fieldset>
+                  <input id="time" type="time" step="60" value="09:00"/>
+                </fieldset>
+              </div>
+              <div>
+                <h5>Clients</h5>
+                <fieldset v-for="client in allClients" v-bind:key="client.id">
+                  <input type="radio" :id="client.id" :value="client.id" v-model="clientSelected"/>
+                  <label :for="client.id">{{client.name}}</label>
+                </fieldset>
+                <!-- <span>{{clientSelected}}</span> -->
+              </div>
+              <div>
+                <h5>Services</h5>
+                <fieldset v-for="service in allServices" v-bind:key="service.id">
+                  <input type="checkbox" :id="service.id" :value="service.id" v-model="servicesSelected"/>
+                  <label :for="service.id">{{service.name}}</label>
+                </fieldset>
+                <input type="button" v-on:click="newEvent()" value="save" />     
+              <!-- <span>{{servicesSelected}}</span> -->
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row" v-else>
         <div class="gridContainer">
           <div class="titles">
             <p>Time</p>
@@ -52,11 +58,33 @@
           <div v-for="event in allEvents" v-bind:key="event.id">
             <p>{{event.datetime | formatTime}}</p>
             <p>{{event.client.name}}</p>
-            <p><span v-for="service in event.services" v-bind:key="service.id">
-                    {{service.name}} {{service.price | formatMoney}},</span></p>
-            <p>$......</p>
+            <ul><li v-for="service in event.services" v-bind:key="service.id">
+              {{service.name}} ({{service.price | formatMoney}})</li>
+            </ul>
+            <p>
+              {{event.services.map(service => service.price).reduce((acc, curr) => acc + curr) | formatMoney}}
+            </p>
+            
           </div>
         </div>
+      </div> -->
+      <div class="row" v-else>
+        <ul class="collection">
+          <li v-for="event in allEvents" v-bind:key="event.id" class="collection-item avatar">
+              <i class="material-icons circle orange">face</i>
+              <span class="title">{{event.datetime | formatTime}}</span>
+              <p>{{event.client.name}}</p>
+              <p>
+                <span v-for="service in event.services" :key="service.id">
+                  {{service.name}} ({{service.price | formatMoney}})
+                </span>
+              </p>
+              <router-link class="secondary-content" :to="{ path: `${page}/${event.id}` }">  
+                  {{event.services.map(service => service.price).reduce((acc, curr) => acc + curr) | formatMoney}} </br>
+                  <i class="material-icons small">arrow_forward</i>
+              </router-link>
+          </li>
+        </ul>
       </div>
     </div>
     
@@ -113,11 +141,12 @@ export default {
   },
   methods: {
     toggleDrawer () {
-      document.querySelector('.drawer').classList.toggle('open')
+      // document.querySelector('.drawer').classList.toggle('open')
+      this.edit = !this.edit
     },
     newEvent () {
       let time = document.querySelector('#time').value
-      let datetime = `${this.$route.params.day}${time}:00-0600`
+      let datetime = `${this.$route.params.day}T${time}:00-0600`
 
       console.log(datetime)
 
@@ -173,8 +202,8 @@ export default {
       }
       return totalsArray
     },
-    clientTotal () {
-      console.log('total!')
+    clientTotal (items) {
+      return items // .reduce((acc, curr) => acc + curr.price)
     }
   }
 }
@@ -192,6 +221,14 @@ export default {
   .day-details {
     background: #26a69a;
     padding: 4px;
+  }
+  .collection {
+    p {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 80%;
+    }
   }
   .client {
     background:#fff;
@@ -212,11 +249,10 @@ export default {
     }
   }
   .drawer {
-    background: rgba(0,0,0,.5);
-    display: none;
+    // background: rgba(0,0,0,.5);
     height: 100%;
-    padding:90px 30px 0 30px;
-    position: absolute;
+    // padding:90px 30px 0 30px;
+    // position: absolute;
     top: 0;
     width: 100%;
     z-index: 10;
@@ -255,7 +291,7 @@ export default {
       div {
         // background:#26a69a;
         display: grid;
-        grid-template-columns: 100px 100px auto 100px;
+        grid-template-columns: 70px 100px 100px 80px;
         grid-gap: 10px;
         padding: 3px;
         // border-bottom: 1px solid mistyrose;

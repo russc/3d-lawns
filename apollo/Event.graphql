@@ -1,0 +1,16 @@
+query Event($id: ID) {
+  Event(id: $id) {
+    id
+    datetime
+    date
+    client {
+      id
+      name
+    }
+    services {
+      id
+      name
+      price
+    }
+  }
+}
