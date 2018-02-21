@@ -6,6 +6,7 @@ query Event($id: ID) {
     client {
       id
       name
+      address
     }
     services {
       id
