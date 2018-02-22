@@ -1,50 +1,102 @@
 <template>
-  <div class="event">
+  <div>
+    <div class="row">
+      <div class="col offset-s1 s10 m4 xl3">
+        <div class="card">
+          <div class="card-content center-align">
+            <div class="avatar circle">
+              <i class="material-icons large">face</i>
+              <span class="card-title grey-text text-darken-4">{{event.client.name}}<i class="material-icons right tiny activator">edit</i></span>
+            </div>
+            <a v-bind:href="`https://www.google.com/maps/search/?api=1&query=${event.client.address}})`">{{event.client.address}}</a>
+          </div>
+          <div class="card-reveal">
+            <!-- <span class="card-title grey-text text-darken-4"><i class="material-icons right tiny">close</i></span> -->
+            <div class="avatar circle">
+              <i class="material-icons large">face</i>
+              <input type="text" :value="event.client.name" />
+              <span class="card-title grey-text text-darken-4"><i class="material-icons right tiny">check</i></span>
+              <span class="card-title grey-text text-darken-4"><i class="material-icons right tiny">close</i></span>
+            </div>
+            <input type="text" :value="event.client.address">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div v-if="!edit" class="col offset-s1 s10 m4 x13">
+        <h4><i @click="edit = true" class="material-icons right small left">edit</i>Services</h4>
+        <div class="selected" v-for="service in event.services" :key="service.id">
+          <h5>{{service.name}}</h5>
+          <h5>${{service.price}}</h5>
+        </div>
+      </div>
+      <div v-else class="col offset-s1 s10 m4 x13">
+        <h4><i @click="edit = false" class="material-icons right small left">close</i>Edit Services</h4>
+        <!-- <div class="services" v-for="service in event.services" :key="service.id">
+          <h5>{{service.name}}</h5>
+          <h5>${{service.price}}</h5>
+        </div> -->
+        <fieldset v-for="service in allServices" v-bind:key="service.id">
+          <input type="checkbox" :id="service.id" :value="service.id" v-model="servicesSelected"/>
+          <label :for="service.id">{{service.name}}</label>
+        </fieldset>
+      </div>
+    </div>
+
+  </div>
+  
+  <!-- <div class="event">
     <h5>{{date}} - {{event.datetime | formatTime}}</h5>
     <div class="client-info">
       <div class="avatar circle">
         <i class="material-icons large">face</i>
       </div>
-      <div class="address">
         <h4>{{event.client.name}}</h4>
-        <a v-bind:href="`https://www.google.com/maps/search/?api=1&query=${event.client.address}})`"><i class="material-icons left">location_on</i>{{event.client.address}}</a>
-      </div>
+        
     </div>
+    <a v-bind:href="`https://www.google.com/maps/search/?api=1&query=${event.client.address}})`">{{event.client.address}}</a>
     
-    <ul>
-      <li v-for="service in event.services" :key="service.id">
-        {{service.name}} ${{service.price}}
-      </li>
-    </ul>
+    <h4>Services</h4>
+    <div v-for="service in event.services" :key="service.id">
+      <h5>{{service.name}}</h5>
+      <h5>${{service.price}}</h5>
+    </div>
+
     <h3 class="total">
       Total: {{event.services.map(service => service.price).reduce((acc, curr) => acc + curr) | formatMoney}}
     </h3>
     <div class="tools">
-      <a class="waves-effect waves-light btn" @click="$router.push({ path: `/calendar/${day}` })"><i class="material-icons">arrow_backward</i></a>
+      <a class="waves-effect waves-light" @click="$router.push({ path: `/calendar/${day}` })">Back</a>
       <a class="waves-effect waves-light btn" @click="$router.go(-1)"><i class="material-icons">check</i></a>
       <a class="waves-effect waves-light btn" @click="$router.go(-1)"><i class="material-icons">edit</i></a>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
 import moment from 'moment'
 import Event from '~/apollo/Event.graphql'
+import allServices from '~/apollo/allServices.graphql'
 
 export default {
   head () {
     return {
-      title: 'Event',
-      event: null
+      title: 'Event'
     }
   },
   data () {
     return {
       page: this.$route.params.event,
       day: this.$route.params.day,
-      date: moment(this.$route.params.day).format('ll')
-
+      date: moment(this.$route.params.day).format('ll'),
+      edit: false,
+      servicesSelected: []
     }
+  },
+  mounted () {
+    this.event.services.map(service => this.servicesSelected.push(service.id))
+    console.log(this.servicesSelected)
   },
   apollo: {
     event: {
@@ -54,53 +106,25 @@ export default {
         return { id: this.$route.params.event }
       },
       update: data => data.Event
+    },
+    allServices: {
+      query: allServices,
+      prefetch: true
     }
   }
 }
 </script>
 <style lang='scss'>
-  .client-info {
-    display: grid;
-    grid-template-columns: auto auto;
-    justify-content: center;
-    align-items: center;
-    a {
-      color: #fff;
-    }
-    .address
-    i {
-      width: 10px;
-    }
-  }
-  .event {
+  h4 {
     color: #fff;
-    display: grid;
-    grid-template-rows: repeat(4, auto);
-    justify-content: center;
-    text-align: center;
   }
-  .tools {
-    background: #26a69a;
-    bottom: 0;
+  .avatar {
     display: flex;
-    // flex-flow: row nowrap;
-    // grid-template-columns: repeat(4, auto);
-    // grid-template-rows: auto;
-    justify-content: space-between;
-    position: fixed;
-    width: 100%;
-    a {
-      background: #26a69a;
-      color: #fff;
-      width: 20%;
-    }
   }
-  .total {
-    position: fixed;
-    bottom: 20px;
-    font-style: italic;
+  .selected {
     color: #fff;
+    display: grid;
+    grid-template-columns: 80% auto; 
   }
-
 </style>
 
