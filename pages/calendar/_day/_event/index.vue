@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col offset-s1 s10 m4 xl3">
+      <div class="col offset-s1 s10">
         <div class="card">
           <div class="card-content center-align">
             <div class="avatar circle">
@@ -24,14 +24,14 @@
       </div>
     </div>
     <div class="row">
-      <div v-if="!edit" class="col offset-s1 s10 m4 x13">
-        <h4><i @click="edit = true" class="material-icons right small left">edit</i>Services</h4>
+      <div v-if="!edit" class="col offset-s1 s10">
+        <h4><i @click="editServices()" class="material-icons right small left">edit</i>Services</h4>
         <div class="selected" v-for="service in event.services" :key="service.id">
           <h5>{{service.name}}</h5>
           <h5>${{service.price}}</h5>
         </div>
       </div>
-      <div v-else class="col offset-s1 s10 m4 x13">
+      <div v-else class="col offset-s1 s10">
         <h4><i @click="edit = false" class="material-icons right small left">close</i>Edit Services</h4>
         <!-- <div class="services" v-for="service in event.services" :key="service.id">
           <h5>{{service.name}}</h5>
@@ -46,32 +46,6 @@
 
   </div>
   
-  <!-- <div class="event">
-    <h5>{{date}} - {{event.datetime | formatTime}}</h5>
-    <div class="client-info">
-      <div class="avatar circle">
-        <i class="material-icons large">face</i>
-      </div>
-        <h4>{{event.client.name}}</h4>
-        
-    </div>
-    <a v-bind:href="`https://www.google.com/maps/search/?api=1&query=${event.client.address}})`">{{event.client.address}}</a>
-    
-    <h4>Services</h4>
-    <div v-for="service in event.services" :key="service.id">
-      <h5>{{service.name}}</h5>
-      <h5>${{service.price}}</h5>
-    </div>
-
-    <h3 class="total">
-      Total: {{event.services.map(service => service.price).reduce((acc, curr) => acc + curr) | formatMoney}}
-    </h3>
-    <div class="tools">
-      <a class="waves-effect waves-light" @click="$router.push({ path: `/calendar/${day}` })">Back</a>
-      <a class="waves-effect waves-light btn" @click="$router.go(-1)"><i class="material-icons">check</i></a>
-      <a class="waves-effect waves-light btn" @click="$router.go(-1)"><i class="material-icons">edit</i></a>
-    </div>
-  </div> -->
 </template>
 
 <script>
@@ -94,10 +68,6 @@ export default {
       servicesSelected: []
     }
   },
-  mounted () {
-    this.event.services.map(service => this.servicesSelected.push(service.id))
-    console.log(this.servicesSelected)
-  },
   apollo: {
     event: {
       query: Event,
@@ -110,6 +80,13 @@ export default {
     allServices: {
       query: allServices,
       prefetch: true
+    }
+  },
+  methods: {
+    editServices () {
+      this.edit = true
+      this.event.services.map(service => this.servicesSelected.push(service.id))
+      console.log(this.servicesSelected)
     }
   }
 }
@@ -125,6 +102,9 @@ export default {
     color: #fff;
     display: grid;
     grid-template-columns: 80% auto; 
+  }
+  fieldset {
+    border: none;
   }
 </style>
 

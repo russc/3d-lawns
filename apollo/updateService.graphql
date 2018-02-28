@@ -1,0 +1,7 @@
+mutation updateService ($id: ID!, $name: String!, $price: Int!) {
+  updateService(id: $id, name: $name, price: $price) {
+    id
+    name
+    price
+  }
+}
