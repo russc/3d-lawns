@@ -1,9 +1,9 @@
 <template>
   <div class="row">
-    <div class="col offset-s1 s10 m4 xl3" v-for="client in allClients" v-bind:key="client.id">
+    <div class="col offset-s1 s10 m4 xl3" v-for="client in clients" v-bind:key="client.id">
         <div class="card">
           <div class="card-content center-align">
-            <img :src="client.avatar" class="circle responsive-img medium" />
+            <i class="material-icons large">face</i>
             <h5 class="center-align">{{client.name}}</h5>
             <p>{{client.email}}</p>
             <h6><i class="material-icons small activator">more_horiz</i></h6>
@@ -24,10 +24,16 @@ export default {
   head: {
     title: 'Clients'
   },
+  data () {
+    return {
+      clients: []
+    }
+  },
   apollo: {
-    allClients: {
+    clients: {
       query: allClients,
-      prefetch: true
+      prefetch: true,
+      update: data => data.allClients
     }
   }
 }

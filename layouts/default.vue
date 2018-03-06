@@ -18,8 +18,8 @@
         <router-link class="link" :to="{ name: 'services' }">
           <i class="material-icons">local_offer</i> <span>Services</span>
         </router-link>
-        <router-link class="link" :to="{ name: 'expenses' }">
-          <i class="material-icons">attach_money</i> <span>Expenses</span>
+        <router-link class="link" :to="{ name: 'finances' }">
+          <i class="material-icons">attach_money</i> <span>Finances</span>
         </router-link>
         <!-- <span class="spacer"></span> -->
         <!-- <a class="link" href="https://nuxtjs.org">
@@ -43,14 +43,8 @@
 </template>
 
 <script>
-import Panel from '~/components/Panel.vue'
-import Search from '~/components/Search.vue'
-
 export default {
-  components: {
-    Panel,
-    Search
-  }
+  
 }
 </script>
 

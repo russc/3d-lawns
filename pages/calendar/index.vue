@@ -34,18 +34,19 @@
                   </router-link>
                 </div>
                 <ul>
-                  <li v-for="event in day.events" v-bind:key="event.id">
+                  <li v-for="event in day.current.slice(0, 3)" v-bind:key="event.id">
                     <small class="event-details">
                       <div>
-                        <!-- <img src="./images/image-3.png" alt="Contact Person"> -->
-                        <span>{{event.datetime | formatTime}} </span>
-                        <span class="client-name">{{event.client.name}}</span>
+                        <span>{{event.datetime | formatTime}} {{event.client.name}}</span>
                       </div>
                     </small>
                   </li>
+                  <li class="center-align" v-if="day.current.length > 3">
+                    <small class="event-more">
+                      {{day.current.length}} more ...
+                    </small>
+                  </li>
                 </ul>
-              <!-- </router-link> -->
-                  
             </div>
             <div class="day outter-month left-align" v-else></div>
         </div>
@@ -67,8 +68,8 @@
       <div>Thu</div>
       <div>Fri</div>
       <div>Sat</div>
-      <div v-for="item in offSet" :key="'mobileOffset'+item"></div>
-      <div v-for="index in numDays" :key="'mobileDay'+index" class="mobile-day" @click="reformat(index, true)">
+      <div v-for="item in offSet" v-bind:key="'mobileOffset'+item"></div>
+      <div v-for="index in numDays" v-bind:key="'mobileDay'+index" class="mobile-day" @click="reformat(index, true)">
         {{index}}
         <p v-if="hasEvents(index)">
           <i class="material-icons xsmall">face</i>
@@ -100,16 +101,18 @@ import Panel from '~/components/Panel.vue'
 export default {
   data () {
     return {
-      eventsInMonth: []
+      eventsInMonth: [],
+      events: []
     }
   },
   components: {
     Panel
   },
   apollo: {
-    allEvents: {
+    events: {
       query: allEvents,
-      prefetch: true
+      prefetch: true,
+      update: data => data.allEvents
     }
   },
   head () {
@@ -128,30 +131,30 @@ export default {
       return moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`)).day()
     },
     currentEvents () {
-      let events = this.allEvents !== null ? this.allEvents.filter(event => moment(event.datetime).isSame(this.month, 'month')) : null
-      if (events !== null) {
-        return events.map(event => event.datetime.slice(0, 10))
+      var current = this.events !== null ? this.events.filter(event => moment(event.datetime).isSame(this.month, 'month')) : null
+      if (current !== null) {
+        return current.map(event => event.datetime.slice(0, 10))
       }
     },
     weeksInMonth () {
-      let start = moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`))
-      let end = this.month.endOf('month')
-      let data = []
-      let day = start
-      let index = 0
+      var start = moment(new Date(`${this.$store.state.year}-${this.$store.state.month + 1}-01`))
+      var end = this.month.endOf('month')
+      var data = []
+      var day = start
+      var index = 0
 
-      while (day <= end && this.allEvents !== null) {
-        let events = this.allEvents.filter(event => moment(event.datetime).isSame(day, 'day'))
+      while (day <= end && this.events !== null) {
+        var current = this.events.filter(event => moment(event.datetime).isSame(day, 'day'))
 
         if (data[index] === undefined) {
           data[index] = Array(7)
         }
-        let classes = day.day() === 6 || day.day() === 0 ? ['day', 'weekend'] : ['day', 'weekday']
+        var classes = day.day() === 6 || day.day() === 0 ? ['day', 'weekend'] : ['day', 'weekday']
 
         data[index][day.day()] = {
           classes,
           date: day,
-          events,
+          current,
           week: day.week()
         }
 
@@ -166,8 +169,8 @@ export default {
   },
   methods: {
     reformat (day, redirect) {
-      let yearMonth = this.month.format('YYYY-MM')
-      let format = day.toString().length > 1 ? `${yearMonth}-${day}` : `${yearMonth}-0${day}`
+      var yearMonth = this.month.format('YYYY-MM')
+      var format = day.toString().length > 1 ? `${yearMonth}-${day}` : `${yearMonth}-0${day}`
       if (redirect) {
         this.$router.push('calendar/' + format)
       } else {
@@ -264,17 +267,19 @@ export default {
       cursor: pointer;
     }
   }
-  .event-details {
-    display: flex;
+  .event-details span {
+    display: block;
     justify-content: space-between;
     color: #006380;
-    .client-nae {
-      color: rgba(0,0,0,.4);
-      white-space: nowrap;
-      @media (max-width: 768px) {
-        display: none;
-      }
-    }
+    overflow: hidden;
+    white-space: nowrap;  
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .event-more {
+    color: navy;
+    text-align: right;
   }
   
   .date {

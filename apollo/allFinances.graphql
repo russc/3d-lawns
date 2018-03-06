@@ -1,0 +1,7 @@
+query {
+  allFinances{
+    id
+    name
+    price
+  }
+}

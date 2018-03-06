@@ -70,9 +70,9 @@
       </div> -->
       <div class="row" v-else>
         <ul class="collection">
-          <li v-for="event in allEvents" v-bind:key="event.id" class="collection-item avatar">
+          <li v-for="event in events" v-bind:key="event.id" class="collection-item avatar">
               <i class="material-icons circle orange">face</i>
-              <span class="title">{{event.datetime | formatTime}}</span>
+              <p class="title">{{event.datetime | formatTime}}</p>
               <p>{{event.client.name}}</p>
               <p>
                 <span v-for="service in event.services" :key="service.id">
@@ -80,7 +80,7 @@
                 </span>
               </p>
               <router-link class="secondary-content" :to="{ path: `${page}/${event.id}` }">  
-                  {{event.services.map(service => service.price).reduce((acc, curr) => acc + curr) | formatMoney}} </br>
+                  <!-- {{event.services.map(service => service.price).reduce((acc, curr) => acc + curr) | formatMoney}}<br /> -->
                   <i class="material-icons small">arrow_forward</i>
               </router-link>
           </li>
@@ -104,6 +104,7 @@ export default {
     return {
       page: this.$route.params.day,
       date: moment(this.$route.params.day).format('ddd, MMMM Do, YYYY'),
+      events: [],
       edit: false,
       total: 0,
       clientSelected: '',
@@ -111,13 +112,13 @@ export default {
     }
   },
   apollo: {
-    allEvents: {
+    events: {
       query: allEvents,
       variables () {
         return { date_contains: this.$route.params.day }
       },
-      prefetch: ({ route }) => ({ date_contains: route.params.day })
-      // update: data => data.allEvents
+      prefetch: ({ route }) => ({ date_contains: route.params.day }),
+      update: data => data.allEvents
     },
     allClients: {
       query: allClients,
@@ -308,6 +309,21 @@ export default {
     //   grid-template-columns: auto;
     // }
     padding: 5px;
+  }
+
+  .collection {
+    .collection-item {
+      background-color: transparent;
+      border: none;
+    }
+    background: transparent;
+    p, i {
+      color: #fff;
+    }
+    i:hover {
+      color: orange;
+    }
+    border: none;
   }
 
 

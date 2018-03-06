@@ -1,0 +1,7 @@
+mutation updateFinance ($id: ID!, $name: String!, $price: Int!) {
+  updateFinance(id: $id, name: $name, price: $price) {
+    id
+    name
+    price
+  }
+}

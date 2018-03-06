@@ -1,30 +1,29 @@
-import { createNetworkInterface } from 'apollo-client'
+import { ApolloLink } from 'apollo-link'
+import { HttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
 
-export default ({ store }) => {
-  const networkInterface = createNetworkInterface({
-    // uri: 'https://api.graph.cool/simple/v1/cj5fbsvefw8tn01274ukoa657'
-    uri: 'https://api.graph.cool/simple/v1/cj9uof1t8066501636bx0rpcw'
-  })
+export default (ctx) => {
+  const httpLink = new HttpLink(
+    {
+      uri: 'https://api.graph.cool/simple/v1/cj9uof1t8066501636bx0rpcw'
+    }
+  )
+  // middleware
+  const middlewareLink = new ApolloLink(
+    (operation, forward) => {
+      const token = process.server
+        ? ctx.req.session
+        : window.__NUXT__.state
+            .session
 
-  // const logErrors = {
-  //   applyAfterware ({ response }, next) {
-  //     if (!response.ok) {
-  //       response.clone().text().then(bodyText => {
-  //         console.error(`Network Error: ${response.status} (${response.statusText}) - ${bodyText}`)
-  //         next()
-  //       })
-  //     } else {
-  //       response.clone().json().then(({ errors }) => {
-  //         if (errors) {
-  //           console.error('GraphQL Errors:', errors.map(e => e.message))
-  //         }
-  //         next()
-  //       })
-  //     }
-  //   }
-  // }
-
-  // networkInterface.useAfter([logErrors])
-
-  return networkInterface
+      operation.setContext({
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      })
+      return forward(operation)
+    }
+  )
+  const link = middlewareLink.concat(httpLink)
+  return { link, cache: new InMemoryCache() }
 }
