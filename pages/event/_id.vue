@@ -65,9 +65,9 @@ export default {
   },
   data () {
     return {
-      page: this.$route.params.event,
-      day: this.$route.params.day,
-      date: moment(this.$route.params.day).format('ll'),
+      page: this.$route.params.id,
+      // day: this.$route.params.day,
+      date: '....',
       edit: false,
       servicesSelected: [],
       event: null,
@@ -77,9 +77,9 @@ export default {
   apollo: {
     event: {
       query: Event,
-      prefetch: ({ route }) => ({ id: route.params.event }),
+      prefetch: ({ route }) => ({ id: route.params.id }),
       variables () {
-        return { id: this.$route.params.event }
+        return { id: this.$route.params.id }
       },
       loadingKey: 'loading',
       update: data => data.Event

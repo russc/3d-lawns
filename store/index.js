@@ -1,11 +1,14 @@
 import Vuex from 'vuex'
-import moment from 'moment'
+// import moment from 'moment'
+const today = new Date()
+let month = today.getMonth() + 1 < 10 ? `0${today.getMonth() + 1}` : today.getMonth() + 1
 
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      month: moment().month(),
-      year: moment().year()
+      today,
+      month,
+      year: today.getFullYear()
     },
     mutations: {
       nextMonth (state) {
@@ -25,8 +28,8 @@ const createStore = () => {
         }
       },
       now (state) {
-        state.month = moment().month()
-        state.year = moment().year()
+        state.month = state.month
+        state.year = state.month
       }
     }
   })

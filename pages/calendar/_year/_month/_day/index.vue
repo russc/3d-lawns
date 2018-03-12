@@ -79,7 +79,7 @@
                   {{service.name}} ({{service.price | formatMoney}})
                 </span>
               </p>
-              <router-link class="secondary-content" :to="{ path: `${page}/${event.id}` }">  
+              <router-link class="secondary-content" :to="{ path: `/event/${event.id}` }">  
                   <!-- {{event.services.map(service => service.price).reduce((acc, curr) => acc + curr) | formatMoney}}<br /> -->
                   <i class="material-icons small">arrow_forward</i>
               </router-link>
@@ -103,7 +103,7 @@ export default {
   data () {
     return {
       page: this.$route.params.day,
-      date: moment(this.$route.params.day).format('ddd, MMMM Do, YYYY'),
+      date: `${this.$route.params.year}-${this.$route.params.month}-${this.$route.params.day}`,
       events: [],
       edit: false,
       total: 0,
@@ -115,9 +115,9 @@ export default {
     events: {
       query: allEvents,
       variables () {
-        return { date_contains: this.$route.params.day }
+        return { date_contains: this.date }
       },
-      prefetch: ({ route }) => ({ date_contains: route.params.day }),
+      prefetch: ({ route }) => ({ date_contains: this.date }),
       update: data => data.allEvents
     },
     allClients: {

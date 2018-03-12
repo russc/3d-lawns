@@ -9,7 +9,7 @@
         <router-link class="link" :to="{ name: 'index' }" exact>
           <i class="material-icons">dashboard</i> <span>Dashboard</span>
         </router-link>
-        <router-link class="link" :to="{ name: 'calendar' }">
+        <router-link class="link" :to="{ path: `/calendar/${$store.state.year}/${$store.state.month}`}">
           <i class="material-icons">event_note</i> <span>Calendar</span>
         </router-link>
         <router-link class="link" :to="{ name: 'clients' }">
@@ -42,11 +42,7 @@
   </div>
 </template>
 
-<script>
-export default {
-  
-}
-</script>
+
 
 <style lang="scss">
 @import 'assets/variables.scss';
