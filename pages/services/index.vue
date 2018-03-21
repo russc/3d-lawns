@@ -27,7 +27,7 @@
             </td>
             <td>
               <i v-if="edit === service.id" @click="edit = false" class="material-icons tiny">close</i>
-              <i v-else @click="deleteService(service.id)" class="material-icons tiny">delete</i>
+              <i v-else @click="deleteService(service.id, service.name)" class="material-icons tiny">delete</i>
             </td>
         </tr>
         <tr>
@@ -53,6 +53,7 @@
 import allServices from '~/apollo/allServices.graphql'
 import createService from '~/apollo/createService.graphql'
 import updateService from '~/apollo/updateService.graphql'
+import deleteService from '~/apollo/deleteService.graphql'
 
 export default {
   head: {
@@ -72,7 +73,7 @@ export default {
     services: {
       query: allServices,
       prefetch: true,
-      update: data => data.allServices
+      update: data => data.allServices,
     }
   },
   methods: {
@@ -94,6 +95,19 @@ export default {
         this.editName = null
         this.editPrice = null
       })
+    },
+    deleteService (id, name) {
+      let yes = confirm(`Are you sure you want to delete ${name}?`)
+      if (yes === true) {
+        this.$apollo.mutate({
+          mutation: deleteService,
+          variables: {
+            id,
+          }
+        }).then(() => {
+          location.reload()
+        })
+      }
     },
     newService () {
       this.$apollo.mutate({

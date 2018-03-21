@@ -1,0 +1,18 @@
+mutation updateEvent($id: ID!, $status: String, $servicesIds: [ID!], $type: String) {
+  updateEvent(id: $id, status: $status, servicesIds: $servicesIds, type: $type) {
+    id
+    datetime
+    date
+    client {
+      id
+      name
+      address
+    }
+    services {
+      id
+      name
+      price
+    }
+    status
+  }
+}

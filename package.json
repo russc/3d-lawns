@@ -14,10 +14,12 @@
     "date-fns": "^1.29.0",
     "graphql": "^0.12.3",
     "graphql-tag": "^2.8.0",
+    "highlight.js": "^9.12.0",
     "materialize-css": "^0.100.2",
     "moment": "^2.18.1",
     "nuxt": "latest",
     "pickadate": "^3.5.6",
+    "signature_pad": "^2.3.2",
     "subscriptions-transport-ws": "^0.9.6",
     "vue-highlight-component": "^1.0.0",
     "vue2-timepicker": "^0.1.4"

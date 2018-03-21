@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col s11">
-          <h5 class="left-align">{{date}}</h5>  
+          <h5 class="left-align">{{currentDate}}</h5>  
           <a v-if="!edit" v-on:click="toggleDrawer()" class="add btn-floating btn-medium waves-effect waves-light green accent-3">
             <i class="material-icons">add</i>
           </a>
@@ -40,7 +40,7 @@
                   <input type="checkbox" :id="service.id" :value="service.id" v-model="servicesSelected"/>
                   <label :for="service.id">{{service.name}}</label>
                 </fieldset>
-                <input type="button" v-on:click="newEvent()" value="save" />     
+                <input class="green accent-3" type="button" v-on:click="newEvent()" value="save" />     
               <!-- <span>{{servicesSelected}}</span> -->
               </div>
             </form>
@@ -72,7 +72,11 @@
         <ul class="collection">
           <li v-for="event in events" v-bind:key="event.id" class="collection-item avatar">
               <i class="material-icons circle orange">face</i>
-              <p class="title">{{event.datetime | formatTime}}</p>
+              <p class="title">
+                <i class="material-icons tiny" @click="deleteEvent(event.id, event.date)">delete</i>
+                {{event.datetime | formatTime}}
+                
+              </p>
               <p>{{event.client.name}}</p>
               <p>
                 <span v-for="service in event.services" :key="service.id">
@@ -92,12 +96,13 @@
 </template>
 
 <script>
-import moment from 'moment'
 import Panel from '~/components/Panel'
 import allServices from '~/apollo/allServices.graphql'
 import allEvents from '~/apollo/allEvents.graphql'
 import allClients from '~/apollo/allClients.graphql'
 import createEvent from '~/apollo/createEvent.graphql'
+import deleteEvent from '~/apollo/deleteEvent.graphql'
+import { format } from 'date-fns'
 
 export default {
   data () {
@@ -147,14 +152,15 @@ export default {
     },
     newEvent () {
       let time = document.querySelector('#time').value
-      let datetime = `${this.$route.params.day}T${time}:00-0600`
+      let date = `${this.$route.params.year}-${this.$route.params.month}-${this.$route.params.day}`
+      let datetime = `${date}T${time}:00-0600`
 
       console.log(datetime)
 
       this.$apollo.mutate({
         mutation: createEvent,
         variables: {
-          date: this.$route.params.day,
+          date,
           datetime,
           servicesIds: this.servicesSelected,
           clientId: this.clientSelected
@@ -171,9 +177,26 @@ export default {
         // Error
         console.error(error)
       })
-    }
+    },
+    deleteEvent (id, name) {
+      let yes = confirm(`Are you sure you want to delete ${name}?`)
+      if (yes === true) {
+        this.$apollo.mutate({
+          mutation: deleteEvent,
+          variables: {
+            id,
+          }
+        }).then(() => {
+          location.reload()
+        })
+      }
+    },
+
   },
   computed: {
+    currentDate () {
+      return format(new Date(`${this.date}T00:00:00`), 'MMM Do YYYY')
+    },
     services () {
       let services = []
       if (this.allEvents !== null) {

@@ -1,0 +1,7 @@
+mutation deleteFinance($id: ID!) {
+  deleteFinance(id: $id) {
+    id
+    name
+    price
+  }
+}

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Dashboard</h1>
+  <div class="splash">
+    <img src="~assets/logo.jpg" alt="Dixon lawns logo">
   </div>
 </template>
 
@@ -20,3 +20,14 @@ export default {
   }
 }
 </script>
+<style>
+.splash {
+  height: 100vh;
+  background: #fff;
+}
+img {
+  width: 100%;
+  height: auto;
+}
+</style>
+

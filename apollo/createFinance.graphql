@@ -1,7 +1,8 @@
-mutation createService ($name: String!, $price: Int!) {
-  createService(name: $name, price: $price) {
+mutation createFinance ($name: String!, $price: Int!, $eventId: String, $type: String) {
+  createFinance(name: $name, price: $price, eventId: $eventId, type: $type) {
     id
     name
     price
+    eventId
   }
 }

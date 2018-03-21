@@ -1,5 +1,6 @@
 <template>
   <div>  
+    <h4 class="center-align">{{currentMonth}}</h4>
     <div class="mobile-frame">
       <div class="mobile-calendar">
         <div>Sun</div>
@@ -42,11 +43,7 @@
       </div> -->
       <div class="mobile toolbar">
         <a class="waves-effect waves-teal btn center-align" @click="monthChange(-1)"><i class="material-icons large">arrow_back</i></a>
-
-        <div class="month-title">
-          <h2>{{currentMonth}}</h2>  
-          <a class="waves-effect waves-teal btn" @click="now()">Now</a>  
-        </div> 
+        <a class="waves-effect waves-teal btn" @click="now()">Now</a>  
         <a class="waves-effect waves-teal btn" @click="monthChange(1)"><i class="material-icons large">arrow_forward</i></a>
       </div>
     </div>
@@ -89,7 +86,7 @@ export default {
   },
   computed: {
     currentMonth () {
-      return format(this.selectedYearMonth, 'MMM')
+      return format(this.selectedYearMonth, 'MMMM')
     },
     selectedYearMonth () {
       return new Date(this.$route.params.year, this.$route.params.month - 1, 1)
@@ -157,6 +154,9 @@ export default {
   *, *:before, *:after {
     box-sizing: inherit;
   }
+  h4 {
+    color: #fff;
+  }
   
   .mobile-calendar {
     @media (min-width: 480px) {
@@ -176,7 +176,7 @@ export default {
     padding: 1rem;
     display: grid;
     flex-wrap: wrap;
-    grid-template-columns: repeat(7, auto);
+    grid-template-columns: repeat(7, 13%);
     grid-template-rows: repeat(7, 5rem);
     justify-content: space-between;
     div {
@@ -191,7 +191,7 @@ export default {
         color: #fff;
       }
       p {
-        color: #0ad97c;
+        color: lime;
         position: relative;
         // right: 4px;
       }
@@ -240,9 +240,9 @@ export default {
       .month-title {
         margin-top: 20px;
       }
-      @media (min-width: 480px) {
-        display: none;
-      }
+      // @media (min-width: 480px) {
+      //   display: none;
+      // }
     }
     .btn {
       background-color: lightslategray;

@@ -6,9 +6,9 @@
       </router-link>
       <!-- <search></search> -->
       <div class="header__menu">
-        <router-link class="link" :to="{ name: 'index' }" exact>
+        <!-- <router-link class="link" :to="{ name: 'index' }" exact>
           <i class="material-icons">dashboard</i> <span>Dashboard</span>
-        </router-link>
+        </router-link> -->
         <router-link class="link" :to="{ path: `/calendar/${$store.state.year}/${$store.state.month}`}">
           <i class="material-icons">event_note</i> <span>Calendar</span>
         </router-link>

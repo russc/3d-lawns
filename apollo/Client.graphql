@@ -1,0 +1,16 @@
+query Client($id: ID!){
+  Client(id: $id) {
+    name
+    events(orderBy:datetime_ASC) {
+      id
+      date
+      datetime
+      status
+      services {
+        name
+        price
+      }
+      amountPaid
+    }
+  }
+}

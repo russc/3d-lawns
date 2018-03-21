@@ -1,0 +1,9 @@
+mutation updateClient ($id: ID!, $name: String!, $email: String!, $address: String!, $phone: String!) {
+  updateClient(id: $id, name: $name, email: $email, address: $address, phone: $phone) {
+    id
+    name
+    email
+    address
+    phone
+  }
+}

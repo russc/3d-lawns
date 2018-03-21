@@ -4,6 +4,7 @@ query {
     name
     avatar
     email
+    phone
     address
   }
 }
