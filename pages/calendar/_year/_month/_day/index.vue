@@ -153,7 +153,7 @@ export default {
     newEvent () {
       let time = document.querySelector('#time').value
       let date = `${this.$route.params.year}-${this.$route.params.month}-${this.$route.params.day}`
-      let datetime = `${date}T${time}:00-0600`
+      let datetime = `${date}T${time}:00-0500`
 
       console.log(datetime)
 
